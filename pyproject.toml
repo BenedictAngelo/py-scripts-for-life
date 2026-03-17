@@ -1,0 +1,21 @@
+[project]
+name = "py-scripts-for-life"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Benedict Angelo",email = "BenedictAngelo@protonmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "cryptography (>=46.0.5,<47.0.0)",
+    "requests (>=2.32.5,<3.0.0)"
+]
+
+[tool.poetry]
+packages = [{include = "yt-to-mp3", from = "src"},{include = "password-manager", from = "src"}]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
