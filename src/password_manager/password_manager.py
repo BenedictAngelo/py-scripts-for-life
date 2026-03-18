@@ -4,7 +4,7 @@ import string
 
 from cryptography.fernet import Fernet
 
-from shared import closing, data_border, read_border, script_title
+from shared import closing, read_border, script_title
 
 
 class PasswordGenerator:
@@ -54,7 +54,6 @@ class PasswordGenerator:
         """
         fer = PasswordGenerator.encryptor()
 
-        # Build character pool based on preferences
         letters = string.ascii_letters
         digits = string.digits
         specials = string.punctuation
@@ -65,7 +64,6 @@ class PasswordGenerator:
         if self.special_characters:
             characters += specials
 
-        # Generate password until all criteria are met
         password = ""
         meets_criteria = False
         has_number = False
@@ -75,20 +73,17 @@ class PasswordGenerator:
             new_char = random.choice(characters)
             password += new_char
 
-            # Track which character types have been included
             if new_char in digits:
                 has_number = True
             elif new_char in specials:
                 has_special = True
 
-            # Check if all criteria are satisfied
             meets_criteria = True
             if self.numbers:
                 meets_criteria = has_number
             if self.special_characters:
                 meets_criteria = meets_criteria and has_special
 
-        # Encrypt password before returning
         encrypted_password = fer.encrypt(password.encode()).decode()
         return encrypted_password
 
@@ -120,10 +115,9 @@ class PasswordManager(PasswordGenerator):
         super().__init__(max_character, numbers, special_characters)
         self.website = website
         self.email = email
-        self.password = self.generator()  # Generate and encrypt password
+        self.password = self.generator()
         self.time_now = datetime.datetime.now().strftime("%I:%M:%S %a %b-%d-%Y")
 
-    # Getter methods for password data
     def what_website(self) -> str:
         """Return the website/service name."""
         return self.website
@@ -147,12 +141,7 @@ class PasswordMode:
     """
 
     def __init__(self, choice: str):
-        """
-        Initialize mode handler.
-
-        Args:
-            choice: User's mode choice ('view', 'add', or 'q')
-        """
+        """Initialize mode handler."""
         self.choice = choice
 
     @staticmethod
@@ -166,19 +155,15 @@ class PasswordMode:
             read_border()
             with open("passwords.txt", "r") as f:
                 for line in f.readlines():
-                    if line.strip():  # Skip empty lines
+                    if line.strip():
                         data = line.rstrip()
                         website_view, email_view, pwd_view, time_view = data.split("|")
 
-                        # Display password entry with decrypted password
-                        print("")
-                        data_border()
-                        print(f"Website: {website_view}")
+                        print(f"\nWebsite: {website_view}")
                         print(f"Email: {email_view}")
                         print(f"Password: {fer.decrypt(pwd_view.encode()).decode()}")
                         print(f"Time created: {time_view}")
-                        data_border()
-                        print("")
+                        print("-" * 67)
             read_border()
         except FileNotFoundError:
             read_border()
@@ -206,13 +191,11 @@ class PasswordMode:
         while True:
             user_input = input(prompt).lower() if "y/n" in prompt else input(prompt)
 
-            # Check for quit command
             if allow_quit and user_input.lower() == "q":
                 print("Exiting...")
                 closing()
                 exit()
 
-            # Apply custom validation if provided
             if validation_func and not validation_func(user_input):
                 continue
 
@@ -247,7 +230,6 @@ class PasswordMode:
         Generates password and saves to passwords.txt.
         """
         while True:
-            # Gather user input
             website = PasswordMode._get_user_input(
                 "\nFor what website will you use it? (q to quit): "
             )
@@ -255,7 +237,6 @@ class PasswordMode:
                 "\nWhat email will you use it for? (q to quit): "
             )
 
-            # Get password length with validation
             max_character_str = PasswordMode._get_user_input(
                 "\nHow many maximum characters in password do you want? (digits only or q to quit): "
             )
@@ -264,7 +245,6 @@ class PasswordMode:
                 continue
             max_character = int(max_character_str)
 
-            # Get password preferences
             numbers = PasswordMode._get_yes_no_input(
                 "\nDo you want digits in your password? (y/n) (q to quit): "
             )
@@ -272,12 +252,10 @@ class PasswordMode:
                 "\nDo you want special characters in your password? (y/n) (q to quit): "
             )
 
-            # Generate password manager instance with user preferences
             password_mgr = PasswordManager(
                 website, email, max_character, numbers, special_characters
             )
 
-            # Prepare data for file storage
             data_line = "|".join(
                 [
                     password_mgr.what_website(),
@@ -287,16 +265,13 @@ class PasswordMode:
                 ]
             )
 
-            # Write to file and confirm
             with open("passwords.txt", "a") as f:
                 f.write(data_line + "\n")
             print("\nPassword successfully written!\n")
             break
 
     def mode(self):
-        """
-        Route user choice to appropriate mode handler.
-        """
+        """Route user choice to appropriate mode handler."""
         match self.choice.lower():
             case "view":
                 PasswordMode.view()
@@ -311,10 +286,7 @@ class PasswordMode:
 
 
 def app():
-    """
-    Main application loop for Password Manager.
-    Displays menu and handles user mode selection.
-    """
+    """Main application loop for Password Manager."""
     title = "Password Manager"
     script_title(title)
 
@@ -326,8 +298,8 @@ def app():
             PasswordMode(choice).mode()
     except KeyboardInterrupt:
         print("\n\nProgram has been forcefully canceled.\n")
-        closing()
     finally:
+        closing()
         exit()
 
 
