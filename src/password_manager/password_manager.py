@@ -4,7 +4,7 @@ import string
 
 from cryptography.fernet import Fernet
 
-from shared import closing, read_border, script_title
+from shared import closing, read_border, script_title, data_border
 
 
 class PasswordGenerator:
@@ -159,11 +159,14 @@ class PasswordMode:
                         data = line.rstrip()
                         website_view, email_view, pwd_view, time_view = data.split("|")
 
-                        print(f"\nWebsite: {website_view}")
+                        print("")
+                        data_border()
+                        print(f"Website: {website_view}")
                         print(f"Email: {email_view}")
                         print(f"Password: {fer.decrypt(pwd_view.encode()).decode()}")
                         print(f"Time created: {time_view}")
-                        print("-" * 67)
+                        data_border()
+                        print("")
             read_border()
         except FileNotFoundError:
             read_border()
@@ -213,13 +216,12 @@ class PasswordMode:
         """
         while True:
             response = PasswordMode._get_user_input(prompt).lower()
-            match response:
-                case "y":
-                    return True
-                case "n":
-                    return False
-                case _:
-                    print("\nInvalid input. Please enter 'y' or 'n'.")
+            if response == "y" or "yes":
+                return True
+            elif response == "n" or "no":
+                return False
+            else:
+                print("\nInvalid input. Please enter 'y' or 'n'.")
 
     @staticmethod
     def add():
@@ -289,17 +291,11 @@ def app():
     title = "Password Manager"
     script_title(title)
 
-    try:
-        while True:
-            choice = input(
-                "Choose what mode do you want, 'add' or 'view'? (q to quit): "
-            )
-            PasswordMode(choice).mode()
-    except KeyboardInterrupt:
-        print("\n\nProgram has been forcefully canceled.\n")
-    finally:
-        closing()
-        exit()
+    while True:
+        choice = input(
+            "Choose what mode do you want, 'add' or 'view'? (q to quit): "
+        )
+        PasswordMode(choice).mode()
 
 
 def main():
