@@ -2,7 +2,7 @@ from password_manager import app as password_manager
 from shared import closing, main_title
 
 
-def main():
+def menu():
     choices = [
         [1, "Password Manager"],
         [2, "Future Project 2"],
@@ -31,6 +31,10 @@ def main():
             case _:
                 print("Invalid input. Please enter a valid option.")
                 continue
+
+
+def main():
+    menu()
 
 
 if __name__ == "__main__":
