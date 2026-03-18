@@ -1,1 +1,1 @@
-from .app import app
+from .password_manager import app

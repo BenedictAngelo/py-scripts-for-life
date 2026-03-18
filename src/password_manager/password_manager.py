@@ -4,6 +4,8 @@ import string
 
 from cryptography.fernet import Fernet
 
+from shared import closing, read_border, script_title
+
 """
 def write_key():
     key = Fernet.generate_key()
@@ -61,7 +63,7 @@ class Password_Generator:
             if self.special_characters:
                 meets_criteria = meets_criteria and has_special
 
-            password = fer.encrypt(password.encode()).decode()
+        password = fer.encrypt(password.encode()).decode()
 
         return password
 
@@ -102,19 +104,20 @@ class Mode:
     def view():
         fer = Password_Generator.encryptor()
         try:
+            read_border()
             with open("passwords.txt", "r") as f:
-                border = "\n==========================================================================\n"
-                read_border = "--------------------------------------------------------------------------"
-                print(read_border)
                 for line in f.readlines():
-                    data = line.rstrip()
-                    website_view, email_view, pwd_view, time_view = data.split("|")
-                    print(
-                        f"{border}Website: {website_view}\nEmail: {email_view}\nPassword: {fer.decrypt(pwd_view.encode()).decode()}\nTime created: {time_view}{border}"
-                    )
-                print(read_border)
+                    if line.strip():
+                        data = line.rstrip()
+                        website_view, email_view, pwd_view, time_view = data.split("|")
+                        print(f"\nWebsite: {website_view}")
+                        print(f"Email: {email_view}")
+                        print(f"Password: {fer.decrypt(pwd_view.encode()).decode()}")
+                        print(f"Time created: {time_view}\n")
+            read_border()
         except FileNotFoundError:
-            print("\nNo 'password.txt' file was found.")
+            read_border()
+            print("\nNo 'passwords.txt' file was found.")
             print("Creating file...")
             with open("passwords.txt", "a") as f:
                 f.write("")
@@ -124,63 +127,100 @@ class Mode:
 
     @staticmethod
     def add():
+        # Website input
+        def website_input():
+            while True:
+                website = input("\nFor what website will you use it? (q to quit): ")
+                if website.lower() == "q":
+                    print("Exiting...")
+                    closing()
+                    exit()
+                else:
+                    break
+            return website
+
+        # Email input
+        def email_input():
+            while True:
+                email = input("\nWhat email will you use it for? (q to quit): ")
+                if email.lower() == "q":
+                    closing()
+                    print("Exiting...")
+                    exit()
+                else:
+                    break
+            return email
+
+        # Max Character input
+        def max_character_input():
+            while True:
+                max_character = input(
+                    "\nHow many maximum characters in password do you want? (digits only or q to quit): "
+                )
+                if max_character.lower() == "q":
+                    print("Exiting...")
+                    closing()
+                    exit()
+                elif not max_character.isdigit():
+                    print("\nInvalid input. Please enter digits only.")
+                    continue
+                else:
+                    break
+            return int(max_character)
+
+        # If has number input
+        def numbers_input():
+            while True:
+                numbers = input(
+                    "\nDo you want digits in your password? (y/n) (q to quit): "
+                ).lower()
+                match numbers:
+                    case "y":
+                        numbers = True
+                        break
+                    case "n":
+                        numbers = False
+                        break
+                    case "q":
+                        print("Exiting...")
+                        closing()
+                        exit()
+                    case _:
+                        print("\nInvalid input. Please enter 'y', 'n', 'q' only.")
+                        continue
+            return numbers
+
+        # if has special number input
+        def special_characters_input():
+            while True:
+                special_characters = input(
+                    "\nDo you want special characters in your password? (y/n) (q to quit): "
+                ).lower()
+                match special_characters:
+                    case "y":
+                        special_characters = True
+                        break
+                    case "n":
+                        special_characters = False
+                        break
+                    case "q":
+                        print("Exiting...")
+                        closing()
+                        exit()
+                    case _:
+                        print("\nInvalid input. Please enter 'y', 'n', 'q' only.")
+                        continue
+            return special_characters
+
         while True:
-            website = input("For what website will you use it? (q to quit): ")
-            if website.lower() == "q":
-                print("Exiting...")
-                exit()
-            else:
-                pass
+            website: str = website_input()
+            email: str = email_input()
+            max_character: int = max_character_input()
+            numbers: bool = numbers_input()
+            special_characters: bool = special_characters_input()
 
-            email = input("What email will you use it for? (q to quit): ")
-            if email.lower() == "q":
-                print("Exiting...")
-                exit()
-            else:
-                pass
-
-            max_character = input(
-                "How many maximum characters in password do you want? (digits only or q to quit): "
-            )
-            if max_character.lower() == "q":
-                exit()
-            elif max_character.isdigit():
-                max_character = int(max_character)
-                return max_character
-
-            numbers = input(
-                "Do you want digits in your password? (y/n) (q to quit): "
-            ).lower()
-            match numbers:
-                case "y":
-                    numbers = True
-                    return numbers
-                case "n":
-                    numbers = False
-                    return numbers
-                case "q":
-                    exit()
-                case _:
-                    print("Invalid input.")
-                    continue
-
-            special_characters = input(
-                "Do you want special characters in your password? (y/n) (q to quit): "
-            ).lower()
-            match special_characters:
-                case "y":
-                    special_characters = True
-                    return special_characters
-                case "n":
-                    special_characters = False
-                    return special_characters
-                case "q":
-                    exit()
-                case _:
-                    print("Invalid input.")
-                    continue
-
-            call_generator = Password_Generator(
+            # CALL THE WHOLE GENERATOR
+            call_generator = Password_Manager(
                 website, email, max_character, numbers, special_characters
             )
             write_website = call_generator.what_website()
@@ -200,27 +240,42 @@ class Mode:
                     + "\n"
                 )
                 print("\nPassword successfully written!\n")
+                break
 
     def mode(self):
-        while True:
-            match self.choice.lower():
-                case "view":
-                    Mode.view()
-                case "add":
-                    Mode.add()
-                case "q":
-                    print("Exiting...")
-                    exit()
-                case _:
-                    print("Invalid input.")
-                    continue
+        match self.choice.lower():
+            case "view":
+                Mode.view()
+            case "add":
+                Mode.add()
+            case "q":
+                print("Exiting...")
+                closing()
+                exit()
+            case _:
+                print("Invalid input.")
+                pass
 
 
 def app():
-    print("Password Manager by BA")
-    choice = input("Choose what mode do you want, 'add' or 'view'? (q to quit): ")
-    Mode(choice).mode()
+    title: str = "Password Manager"
+    script_title(title)
+
+    try:
+        while True:
+            choice = input(
+                "Choose what mode do you want, 'add' or 'view'? (q to quit): "
+            )
+            Mode(choice).mode()
+    except KeyboardInterrupt:
+        print("\n\nProgram has been forcefully canceled.\n")
+    finally:
+        exit()
+
+
+def main():
+    app()
 
 
 if __name__ == "__main__":
-    app()
+    main()
