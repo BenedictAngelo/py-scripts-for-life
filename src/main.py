@@ -1,7 +1,7 @@
-from password_manager import app
+from password_manager import app as pwd_manager
 
 def main():
-    app()
+    pwd_manager()
     return 0
 
 if __name__ == "__main__":
