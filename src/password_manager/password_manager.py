@@ -193,7 +193,6 @@ class PasswordMode:
 
             if allow_quit and user_input.lower() == "q":
                 print("Exiting...")
-                closing()
                 exit()
 
             if validation_func and not validation_func(user_input):
