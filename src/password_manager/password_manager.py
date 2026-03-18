@@ -4,45 +4,68 @@ import string
 
 from cryptography.fernet import Fernet
 
-from shared import closing, read_border, script_title
-
-"""
-def write_key():
-    key = Fernet.generate_key()
-    with open("key.key","wb") as key_file:
-        key_file.write(key)"""
-# write_key()
+from shared import closing, data_border, read_border, script_title
 
 
-class Password_Generator:
+class PasswordGenerator:
+    """
+    Generates secure random passwords with customizable criteria.
+
+    Supports:
+    - Custom password length
+    - Optional digit inclusion
+    - Optional special character inclusion
+    - Automatic encryption of generated passwords
+    """
+
     def __init__(
         self, max_character: int, numbers: bool = True, special_characters: bool = True
     ):
+        """
+        Initialize the password generator.
+
+        Args:
+            max_character: Minimum length of the password
+            numbers: Include digits in password (default: True)
+            special_characters: Include special characters (default: True)
+        """
         self.max_character = max_character
         self.numbers = numbers
         self.special_characters = special_characters
 
     @staticmethod
     def encryptor():
-        file = open("key.key", "rb")
-        key = file.read()
-        file.close()
-        fer = Fernet(key)
-        return fer
+        """
+        Load encryption cipher from key.key file.
+
+        Returns:
+            Fernet cipher object for encryption/decryption
+        """
+        with open("key.key", "rb") as key_file:
+            key = key_file.read()
+        return Fernet(key)
 
     def generator(self):
-        fer = Password_Generator.encryptor()
+        """
+        Generate a random password meeting the specified criteria.
+
+        Returns:
+            Encrypted password string
+        """
+        fer = PasswordGenerator.encryptor()
+
+        # Build character pool based on preferences
         letters = string.ascii_letters
         digits = string.digits
         specials = string.punctuation
 
         characters = letters
-
         if self.numbers:
             characters += digits
         if self.special_characters:
             characters += specials
 
+        # Generate password until all criteria are met
         password = ""
         meets_criteria = False
         has_number = False
@@ -52,23 +75,30 @@ class Password_Generator:
             new_char = random.choice(characters)
             password += new_char
 
+            # Track which character types have been included
             if new_char in digits:
                 has_number = True
             elif new_char in specials:
                 has_special = True
 
+            # Check if all criteria are satisfied
             meets_criteria = True
             if self.numbers:
                 meets_criteria = has_number
             if self.special_characters:
                 meets_criteria = meets_criteria and has_special
 
-        password = fer.encrypt(password.encode()).decode()
+        # Encrypt password before returning
+        encrypted_password = fer.encrypt(password.encode()).decode()
+        return encrypted_password
 
-        return password
 
+class PasswordManager(PasswordGenerator):
+    """
+    Manages password storage with website, email, and metadata.
+    Inherits password generation capabilities from PasswordGenerator.
+    """
 
-class Password_Manager(Password_Generator):
     def __init__(
         self,
         website: str,
@@ -77,43 +107,78 @@ class Password_Manager(Password_Generator):
         numbers: bool = True,
         special_characters: bool = True,
     ):
+        """
+        Initialize password manager with user credentials and generation settings.
+
+        Args:
+            website: Website/service name
+            email: Email address associated with password
+            max_character: Password length
+            numbers: Include digits
+            special_characters: Include special characters
+        """
         super().__init__(max_character, numbers, special_characters)
         self.website = website
         self.email = email
-        self.password = self.generator()
+        self.password = self.generator()  # Generate and encrypt password
         self.time_now = datetime.datetime.now().strftime("%I:%M:%S %a %b-%d-%Y")
 
+    # Getter methods for password data
     def what_website(self) -> str:
+        """Return the website/service name."""
         return self.website
 
     def what_email(self) -> str:
+        """Return the email address."""
         return self.email
 
     def what_password(self) -> str:
+        """Return the encrypted password."""
         return self.password
 
     def what_time(self) -> str:
+        """Return the time when password was created."""
         return self.time_now
 
 
-class Mode:
+class PasswordMode:
+    """
+    Handles different modes: 'view' existing passwords or 'add' new ones.
+    """
+
     def __init__(self, choice: str):
+        """
+        Initialize mode handler.
+
+        Args:
+            choice: User's mode choice ('view', 'add', or 'q')
+        """
         self.choice = choice
 
     @staticmethod
     def view():
-        fer = Password_Generator.encryptor()
+        """
+        Display all stored passwords from passwords.txt file.
+        Decrypts passwords for display using the key.key cipher.
+        """
+        fer = PasswordGenerator.encryptor()
         try:
             read_border()
             with open("passwords.txt", "r") as f:
                 for line in f.readlines():
-                    if line.strip():
+                    if line.strip():  # Skip empty lines
                         data = line.rstrip()
                         website_view, email_view, pwd_view, time_view = data.split("|")
-                        print(f"\nWebsite: {website_view}")
+
+                        # Display password entry with decrypted password
+                        print("")
+                        data_border()
+                        print(f"Website: {website_view}")
                         print(f"Email: {email_view}")
                         print(f"Password: {fer.decrypt(pwd_view.encode()).decode()}")
-                        print(f"Time created: {time_view}\n")
+                        print(f"Time created: {time_view}")
+                        data_border()
+                        print("")
             read_border()
         except FileNotFoundError:
             read_border()
@@ -121,144 +186,136 @@ class Mode:
             print("Creating file...")
             with open("passwords.txt", "a") as f:
                 f.write("")
-                print("\nFile successfully created but empty for now\n")
-        finally:
-            pass
+            print("\nFile successfully created but empty for now\n")
+
+    @staticmethod
+    def _get_user_input(
+        prompt: str, validation_func=None, allow_quit: bool = True
+    ) -> str:
+        """
+        Reusable input validation function to reduce code redundancy.
+
+        Args:
+            prompt: Input prompt message
+            validation_func: Optional function to validate input (returns True if valid)
+            allow_quit: Allow user to quit with 'q' input
+
+        Returns:
+            Valid user input
+        """
+        while True:
+            user_input = input(prompt).lower() if "y/n" in prompt else input(prompt)
+
+            # Check for quit command
+            if allow_quit and user_input.lower() == "q":
+                print("Exiting...")
+                closing()
+                exit()
+
+            # Apply custom validation if provided
+            if validation_func and not validation_func(user_input):
+                continue
+
+            return user_input
+
+    @staticmethod
+    def _get_yes_no_input(prompt: str) -> bool:
+        """
+        Get yes/no input with validation.
+
+        Args:
+            prompt: Question to ask user
+
+        Returns:
+            True if 'y', False if 'n'
+        """
+        while True:
+            response = PasswordMode._get_user_input(prompt).lower()
+            match response:
+                case "y":
+                    return True
+                case "n":
+                    return False
+                case _:
+                    print("\nInvalid input. Please enter 'y' or 'n'.")
 
     @staticmethod
     def add():
-        # Website input
-        def website_input():
-            while True:
-                website = input("\nFor what website will you use it? (q to quit): ")
-                if website.lower() == "q":
-                    print("Exiting...")
-                    closing()
-                    exit()
-                else:
-                    break
-            return website
-
-        # Email input
-        def email_input():
-            while True:
-                email = input("\nWhat email will you use it for? (q to quit): ")
-                if email.lower() == "q":
-                    closing()
-                    print("Exiting...")
-                    exit()
-                else:
-                    break
-            return email
-
-        # Max Character input
-        def max_character_input():
-            while True:
-                max_character = input(
-                    "\nHow many maximum characters in password do you want? (digits only or q to quit): "
-                )
-                if max_character.lower() == "q":
-                    print("Exiting...")
-                    closing()
-                    exit()
-                elif not max_character.isdigit():
-                    print("\nInvalid input. Please enter digits only.")
-                    continue
-                else:
-                    break
-            return int(max_character)
-
-        # If has number input
-        def numbers_input():
-            while True:
-                numbers = input(
-                    "\nDo you want digits in your password? (y/n) (q to quit): "
-                ).lower()
-                match numbers:
-                    case "y":
-                        numbers = True
-                        break
-                    case "n":
-                        numbers = False
-                        break
-                    case "q":
-                        print("Exiting...")
-                        closing()
-                        exit()
-                    case _:
-                        print("\nInvalid input. Please enter 'y', 'n', 'q' only.")
-                        continue
-            return numbers
-
-        # if has special number input
-        def special_characters_input():
-            while True:
-                special_characters = input(
-                    "\nDo you want special characters in your password? (y/n) (q to quit): "
-                ).lower()
-                match special_characters:
-                    case "y":
-                        special_characters = True
-                        break
-                    case "n":
-                        special_characters = False
-                        break
-                    case "q":
-                        print("Exiting...")
-                        closing()
-                        exit()
-                    case _:
-                        print("\nInvalid input. Please enter 'y', 'n', 'q' only.")
-                        continue
-            return special_characters
-
+        """
+        Interactive mode to add a new password entry.
+        Prompts user for website, email, and password preferences.
+        Generates password and saves to passwords.txt.
+        """
         while True:
-            website: str = website_input()
-            email: str = email_input()
-            max_character: int = max_character_input()
-            numbers: bool = numbers_input()
-            special_characters: bool = special_characters_input()
+            # Gather user input
+            website = PasswordMode._get_user_input(
+                "\nFor what website will you use it? (q to quit): "
+            )
+            email = PasswordMode._get_user_input(
+                "\nWhat email will you use it for? (q to quit): "
+            )
 
-            # CALL THE WHOLE GENERATOR
-            call_generator = Password_Manager(
+            # Get password length with validation
+            max_character_str = PasswordMode._get_user_input(
+                "\nHow many maximum characters in password do you want? (digits only or q to quit): "
+            )
+            if not max_character_str.isdigit():
+                print("\nInvalid input. Please enter digits only.")
+                continue
+            max_character = int(max_character_str)
+
+            # Get password preferences
+            numbers = PasswordMode._get_yes_no_input(
+                "\nDo you want digits in your password? (y/n) (q to quit): "
+            )
+            special_characters = PasswordMode._get_yes_no_input(
+                "\nDo you want special characters in your password? (y/n) (q to quit): "
+            )
+
+            # Generate password manager instance with user preferences
+            password_mgr = PasswordManager(
                 website, email, max_character, numbers, special_characters
             )
-            write_website = call_generator.what_website()
-            write_email = call_generator.what_email()
-            write_password = call_generator.what_password()
-            write_time = call_generator.what_time()
 
+            # Prepare data for file storage
+            data_line = "|".join(
+                [
+                    password_mgr.what_website(),
+                    password_mgr.what_email(),
+                    password_mgr.what_password(),
+                    password_mgr.what_time(),
+                ]
+            )
+
+            # Write to file and confirm
             with open("passwords.txt", "a") as f:
-                f.write(
-                    write_website
-                    + "|"
-                    + write_email
-                    + "|"
-                    + write_password
-                    + "|"
-                    + write_time
-                    + "\n"
-                )
-                print("\nPassword successfully written!\n")
-                break
+                f.write(data_line + "\n")
+            print("\nPassword successfully written!\n")
+            break
 
     def mode(self):
+        """
+        Route user choice to appropriate mode handler.
+        """
         match self.choice.lower():
             case "view":
-                Mode.view()
+                PasswordMode.view()
             case "add":
-                Mode.add()
+                PasswordMode.add()
             case "q":
                 print("Exiting...")
                 closing()
                 exit()
             case _:
-                print("Invalid input.")
-                pass
+                print("Invalid input. Please choose 'add', 'view', or 'q'.")
 
 
 def app():
-    title: str = "Password Manager"
+    """
+    Main application loop for Password Manager.
+    Displays menu and handles user mode selection.
+    """
+    title = "Password Manager"
     script_title(title)
 
     try:
@@ -266,14 +323,16 @@ def app():
             choice = input(
                 "Choose what mode do you want, 'add' or 'view'? (q to quit): "
             )
-            Mode(choice).mode()
+            PasswordMode(choice).mode()
     except KeyboardInterrupt:
         print("\n\nProgram has been forcefully canceled.\n")
+        closing()
     finally:
         exit()
 
 
 def main():
+    """Entry point for the password manager application."""
     app()
 
 
