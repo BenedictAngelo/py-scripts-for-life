@@ -1,20 +1,46 @@
-[project]
+[tool.poetry]
 name = "py-scripts-for-life"
 version = "0.1.0"
-description = ""
-authors = [
-    {name = "Benedict Angelo",email = "BenedictAngelo@protonmail.com"}
-]
+description = "A collection of practical Python utilities and tools for everyday tasks."
+authors = ["Benedict Angelo <BenedictAngelo@protonmail.com>"]
 readme = "README.md"
-requires-python = ">=3.14"
-dependencies = [
-    "cryptography (>=46.0.5,<47.0.0)",
-    "requests (>=2.32.5,<3.0.0)"
+license = "MIT"
+repository = "https://github.com/BenedictAngelo/py-scripts-for-life"
+homepage = "https://github.com/BenedictAngelo/py-scripts-for-life"
+keywords = ["utilities", "password-manager", "tools"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Utilities",
 ]
 
-[tool.poetry]
-packages = [{include = "yt-to-mp3", from = "src"},{include = "password-manager", from = "src"}]
+packages = [
+    { include = "py_scripts_for_life", from = "src" }
+]
 
+[tool.poetry.dependencies]
+python = "^3.10"
+cryptography = "^46.0.5"
+requests = "^2.32.5"
+
+[tool.poetry.scripts]
+py-scripts-for-life = "py_scripts_for_life.main:main"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+black = "^23.0.0"
+ruff = "^0.1.0"
+mypy = "^1.5.0"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

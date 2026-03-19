@@ -13,7 +13,7 @@ A secure command-line password manager with encryption support.
 - Encrypt/decrypt passwords using Fernet (industry-standard)
 - Interactive CLI interface
 
-**Status**: Complete and production-ready
+**Status**: On going and production-ready
 
 ### YouTube to MP3 🚧
 Download YouTube videos and convert them to MP3 audio files.
@@ -44,7 +44,7 @@ poetry install
 ### Running the Application
 
 ```bash
-poetry run python src/main.py
+poetry run py-scripts-for-life
 ```
 
 Select a tool from the menu to get started.
@@ -61,20 +61,29 @@ py-scripts-for-life/
 ├── poetry.lock                 # Dependency lock file
 │
 ├── src/
-│   ├── main.py                 # Application entry point
-│   ├── password_manager/       # Password Manager module
-│   │   ├── password_generator.py
-│   │   ├── README.md
-│   │   └── __init__.py
-│   ├── yt-to-mp3/             # YouTube to MP3 module (placeholder)
-│   │   ├── README.md
-│   │   └── __init__.py
-│   └── shared/                # Shared utilities
-│       ├── graphics.py        # UI formatting
-│       └── __init__.py
+│   └── py-scripts-for-life/    # Main package namespace
+│       ├── main.py             # Application entry point
+│       │
+│       ├── password_manager/   # Password Manager module
+│       │   ├── README.md
+│       │   ├── app.py          # Main application logic
+│       │   ├── modes.py        # Mode handlers
+│       │   ├── password_generator.py  # Core implementation
+│       │   └── __init__.py
+│       │
+│       ├── yt-to-mp3/          # YouTube to MP3 module (placeholder)
+│       │   ├── README.md
+│       │   └── __init__.py
+│       │
+│       └── shared/             # Shared utilities
+│           ├── graphics.py     # UI formatting
+│           └── __init__.py
 │
-├── tests/                     # Test directory
-└── context/                   # Project summary
+├── tests/                      # Test directory
+├── context/                    # Project summary
+└── outputs/                    # Runtime data directory
+    ├── key.key                 # Encryption key (auto-generated)
+    └── passwords.txt           # Encrypted passwords (auto-generated)
 ```
 
 ---
@@ -82,16 +91,16 @@ py-scripts-for-life/
 ## 🛠️ Tech Stack
 
 - **Python** 3.10+ - Programming language
-- **Poetry** - Dependency management
+- **Poetry** - Dependency management and build tool
 - **Cryptography** - Fernet encryption library
+- **requests** - HTTP library
 
 ---
 
 ## 📚 Documentation
 
-- **Password Manager**: [src/password_manager/README.md](./src/password_manager/README.md)
-- **YouTube to MP3**: [src/yt-to-mp3/README.md](./src/yt-to-mp3/README.md)
-- **Project Summary**: [context/README.md](./context/README.md)
+- **Password Manager**: [src/py-scripts-for-life/password_manager/README.md](./src/py-scripts-for-life/password_manager/README.md)
+- **YouTube to MP3**: [src/py-scripts-for-life/yt-to-mp3/README.md](./src/py-scripts-for-life/yt-to-mp3/README.md)
 
 ---
 
