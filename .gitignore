@@ -1,3 +1,5 @@
 *passwords.txt
 key.key
 context/
+*__pycache__/
+outputs/

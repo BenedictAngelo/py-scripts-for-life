@@ -19,9 +19,12 @@ A secure command-line password manager with encryption support using Fernet.
 
 ```
 password_manager/
-├── README.md                # This file
-├── password_manager.py      # Core implementation
+├── README.md               # This file
+├── password_generator.py   # Password generation and encryption implementation
+├── modes.py                # Mode select for what to do for the app
+├── app.py                  # Wrapper for all the components
 ├── __init__.py             # Module initialization
+outputs/
 ├── key.key                 # Encryption key (auto-generated)
 └── passwords.txt           # Encrypted password storage
 ```

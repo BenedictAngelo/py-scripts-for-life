@@ -4,10 +4,10 @@ Displays menu of available tools and routes user selection.
 """
 
 from password_manager import app as password_manager
-from shared import closing, main_title
+from shared import Graphics
 
 
-def menu():
+def menu() -> None:
     """Display main menu and handle tool selection."""
     try:
         choices = [
@@ -16,19 +16,21 @@ def menu():
             [3, "Future Project 3"],
         ]
 
-        main_title()
+        Graphics.main_title()
 
         while True:
             for num, tool_name in choices:
                 print(" " * 20 + f"{num}. {tool_name}")
             print("\n" + " " * 20 + "q. Quit")
 
-            choice = input("\nWhat tool do you want to use? (1-3) (q to quit): ").lower()
+            choice: str = input(
+                "\nWhat tool do you want to use? (1-3) (q to quit): "
+            ).lower()
 
             match choice:
                 case "q":
                     print("Exiting...")
-                    closing()
+                    Graphics.closing()
                     exit()
                 case "1":
                     password_manager()
@@ -37,19 +39,18 @@ def menu():
                 case "3":
                     print("Future Project 3 - Coming soon!")
                 case _:
-                    print("Invalid input. Please enter a valid option (1-3 or q).\n")
+                    print("\nInvalid input. Please enter a valid option (1-3 or q).\n")
                     continue
     except KeyboardInterrupt:
-        print("\n\nExiting...")
-        closing()
+        Graphics.closing()
     finally:
         exit()
-
 
 
 def main():
     """Entry point for the application."""
     menu()
+    return 0
 
 
 if __name__ == "__main__":

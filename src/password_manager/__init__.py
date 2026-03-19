@@ -10,6 +10,6 @@ Main components:
 - PasswordMode: Handles user interaction (view/add modes)
 """
 
-from .password_manager import app
+from .app import app
 
 __all__ = ["app"]
