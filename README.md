@@ -15,7 +15,7 @@ A secure command-line password manager with encryption support.
 - Encrypt/decrypt passwords using Fernet
 - View stored passwords
 
-**Status**: ✅ Complete
+**Status**: 🚧 In Development
 
 #### 2. [YouTube to MP3](./src/yt-to-mp3/README.md)
 Download YouTube videos and convert them to MP3 audio files.
@@ -65,7 +65,7 @@ py-scripts-for-life/
 │   ├── main.py                          # Main entry point
 │   ├── password_manager/
 │   │   ├── README.md                    # Password Manager docs
-│   │   ├── password_manager.py          # Core implementation
+│   │   ├── components*                  # Core implementation
 │   │   └── __init__.py
 │   ├── yt-to-mp3/
 │   │   ├── README.md                    # YouTube to MP3 docs

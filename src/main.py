@@ -29,15 +29,14 @@ def menu() -> None:
 
             match choice:
                 case "q":
-                    print("Exiting...")
                     Graphics.closing()
                     exit()
                 case "1":
                     password_manager()
                 case "2":
-                    print("Future Project 2 - Coming soon!")
+                    print("\nFuture Project 2 - Coming soon!\n")
                 case "3":
-                    print("Future Project 3 - Coming soon!")
+                    print("\nFuture Project 3 - Coming soon!\n")
                 case _:
                     print("\nInvalid input. Please enter a valid option (1-3 or q).\n")
                     continue
