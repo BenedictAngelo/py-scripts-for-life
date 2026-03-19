@@ -2,12 +2,13 @@
 
 Download YouTube videos and convert them to MP3 audio files.
 
-## 🌟 Features
+## 🌟 Planned Features
 
-- **Download Videos**: Fetch videos from YouTube URLs
-- **Convert to MP3**: Extract audio and save as MP3
-- **Batch Processing**: Process multiple videos
-- **Quality Options**: Choose audio quality settings
+- Download audio from YouTube videos
+- Convert to MP3 format automatically
+- Batch processing support
+- Quality selection options
+- Progress indication
 
 ## 🛠️ Tech Stack
 
@@ -20,7 +21,7 @@ Download YouTube videos and convert them to MP3 audio files.
 ```
 yt-to-mp3/
 ├── README.md                # This file
-├── yt_to_mp3.py            # Core implementation
+├── yt_to_mp3.py            # Core implementation (coming soon)
 └── __init__.py             # Module initialization
 ```
 
@@ -28,19 +29,18 @@ yt-to-mp3/
 
 ### Prerequisites
 - Python 3.10+
-- FFmpeg installed on system
-- Parent project poetry environment
+- FFmpeg (system dependency)
+- Poetry
 
 ### Installation
 
-From the project root:
+From project root:
 ```bash
 poetry install
 ```
 
-### Running YouTube to MP3
+### Running (When Implemented)
 
-From the project root:
 ```bash
 poetry run python src/main.py
 ```
@@ -49,31 +49,72 @@ Then select option "2. YouTube to MP3" from the menu.
 
 ---
 
-## 💻 Usage
+## 📋 Planned Components
 
-1. Select "YouTube to MP3" from the main menu
-2. Enter YouTube URL(s)
-3. Choose output quality
-4. Wait for download and conversion to complete
-5. MP3 file saved to output directory
+### YouTubeDownloader
+- Download video metadata
+- Extract audio stream
+- Handle playlist support
+- Progress tracking
+
+### MP3Converter
+- Audio format conversion
+- Quality settings
+- Metadata tagging
+- File organization
 
 ---
 
 ## 🔧 Configuration
 
-Create a `.env` file in the project root for custom settings:
-```
-OUTPUT_DIR=./downloads
-AUDIO_QUALITY=192
-```
+To be implemented with:
+- Output directory settings
+- Audio quality preferences
+- Format options
+- Download history
+
+---
+
+## 🚫 Known Limitations
+
+- Not yet implemented
+- Placeholder module
+
+---
+
+## 🚀 Development Status
+
+**Status**: 🚧 In Development
+
+This module is currently a placeholder. Development will begin after initial Password Manager deployment and testing.
+
+### Roadmap
+
+1. [ ] Setup project structure
+2. [ ] Implement core downloading
+3. [ ] Add MP3 conversion
+4. [ ] Add quality options
+5. [ ] Error handling
+6. [ ] Documentation
+7. [ ] Testing
+
+---
+
+## 🤝 Contributing
+
+When implementing this module:
+1. Follow existing project patterns
+2. Use comprehensive docstrings
+3. Include error handling
+4. Add progress indicators
+5. Update this README with implementation details
 
 ---
 
 ## 📝 License
 
-See [LICENSE](../../LICENSE) in the project root.
+See [LICENSE](../../LICENSE) in project root.
 
 ---
 
-**Status**: 🚧 In Development
-**Last Updated**: March 2024
+**Status**: Planned | **Last Updated**: March 2024

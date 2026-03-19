@@ -2,28 +2,23 @@
 
 A collection of practical Python utilities and tools for everyday tasks.
 
-## 📚 Projects Overview
+## 🌟 Projects
 
-This repository contains multiple standalone Python projects. Each module has its own documentation and can be used independently.
-
-### Available Projects
-
-#### 1. [Password Manager](./src/password_manager/README.md)
+### Password Manager ✅
 A secure command-line password manager with encryption support.
-- Generate secure random passwords
-- Store passwords with website and email information
-- Encrypt/decrypt passwords using Fernet
-- View stored passwords
 
-**Status**: 🚧 In Development
+**Features:**
+- Generate secure random passwords with customizable options
+- Store passwords with website, email, and timestamp
+- Encrypt/decrypt passwords using Fernet (industry-standard)
+- Interactive CLI interface
 
-#### 2. [YouTube to MP3](./src/yt-to-mp3/README.md)
+**Status**: Complete and production-ready
+
+### YouTube to MP3 🚧
 Download YouTube videos and convert them to MP3 audio files.
 
-**Status**: 🚧 In Development
-
-#### 3. Future Projects
-More utilities coming soon!
+**Status**: In development (placeholder)
 
 ---
 
@@ -31,7 +26,7 @@ More utilities coming soon!
 
 ### Prerequisites
 - Python 3.10+
-- Poetry (for dependency management)
+- Poetry
 
 ### Installation
 
@@ -48,12 +43,11 @@ poetry install
 
 ### Running the Application
 
-Start the main menu:
 ```bash
 poetry run python src/main.py
 ```
 
-This will display a menu where you can select which tool to use.
+Select a tool from the menu to get started.
 
 ---
 
@@ -61,23 +55,26 @@ This will display a menu where you can select which tool to use.
 
 ```
 py-scripts-for-life/
+├── README.md                    # This file
+├── LICENSE                      # MIT License
+├── pyproject.toml              # Poetry configuration
+├── poetry.lock                 # Dependency lock file
+│
 ├── src/
-│   ├── main.py                          # Main entry point
-│   ├── password_manager/
-│   │   ├── README.md                    # Password Manager docs
-│   │   ├── components*                  # Core implementation
+│   ├── main.py                 # Application entry point
+│   ├── password_manager/       # Password Manager module
+│   │   ├── password_generator.py
+│   │   ├── README.md
 │   │   └── __init__.py
-│   ├── yt-to-mp3/
-│   │   ├── README.md                    # YouTube to MP3 docs
-│   │   └── [project files]
-│   ├── shared/
-│   │   ├── __init__.py
-│   │   └── graphics.py                  # Shared UI components
-│   └── [other projects]
-├── context/                             # Development documentation
-├── pyproject.toml                       # Project configuration
-├── poetry.lock                          # Dependency lock file
-└── README.md                            # This file
+│   ├── yt-to-mp3/             # YouTube to MP3 module (placeholder)
+│   │   ├── README.md
+│   │   └── __init__.py
+│   └── shared/                # Shared utilities
+│       ├── graphics.py        # UI formatting
+│       └── __init__.py
+│
+├── tests/                     # Test directory
+└── context/                   # Project summary
 ```
 
 ---
@@ -86,33 +83,28 @@ py-scripts-for-life/
 
 - **Python** 3.10+ - Programming language
 - **Poetry** - Dependency management
-- **Cryptography** - Password encryption (Password Manager)
+- **Cryptography** - Fernet encryption library
 
 ---
 
-## 📖 Module Documentation
+## 📚 Documentation
 
-For detailed information about each project, see:
-
-- **Password Manager**: [./src/password_manager/README.md](./src/password_manager/README.md)
-- **YouTube to MP3**: [./src/yt-to-mp3/README.md](./src/yt-to-mp3/README.md)
-
----
-
-## 🔧 Development
-
-### Development Documentation
-
-Technical documentation and refactoring notes are available in the `context/` directory:
-- `context/QUICK_REFERENCE.md` - Quick overview of changes
-- `context/TESTING_CHECKLIST.md` - Testing guide
-- `context/DETAILED_CHANGES.md` - In-depth code analysis
+- **Password Manager**: [src/password_manager/README.md](./src/password_manager/README.md)
+- **YouTube to MP3**: [src/yt-to-mp3/README.md](./src/yt-to-mp3/README.md)
+- **Project Summary**: [context/README.md](./context/README.md)
 
 ---
 
-## 🤝 Contributing
+## 🔐 Security
 
-Contributions are welcome! Feel free to fork and submit pull requests.
+**Password Manager Security:**
+- All passwords encrypted with Fernet (symmetric encryption)
+- Encryption key stored in `outputs/key.key`
+- Key file excluded from version control (.gitignore)
+- No hardcoded secrets or credentials
+- Proper resource cleanup with context managers
+
+**Important**: Do not lose your `key.key` file. Without it, stored passwords cannot be decrypted.
 
 ---
 
@@ -130,5 +122,10 @@ This project is licensed under the MIT License - see the [LICENSE](./LICENSE) fi
 
 ---
 
-**Last Updated**: March 2024
-**Status**: Active Development
+## 🤝 Contributing
+
+Contributions are welcome! Follow the existing code patterns and documentation standards when adding new features.
+
+---
+
+**Status**: Active Development | **Last Updated**: March 2024
