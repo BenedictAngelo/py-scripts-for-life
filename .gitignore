@@ -1,4 +1,5 @@
 context/
 *__pycache__/
-outputs/*
+*key.key
+*passwords.txt
 dist/
