@@ -145,7 +145,7 @@ class PasswordMode:
             with open(PasswordMode.file_path, "a") as f:
                 f.write(data_line + "\n")
             print(
-                "\nPassword successfully written! See 'outputs/passwords.txt' or in 'view' mode.\n"
+                "\nPassword successfully written! See 'outputs/passwords.txt' or in 'view' mode for decryption.\n"
             )
             break
 
