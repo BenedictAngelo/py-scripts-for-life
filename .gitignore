@@ -1,5 +1,25 @@
-context/
-*__pycache__/
-*key.key
-*passwords.txt
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# IDE
+.vscode/
+.idea/
+
+# Dependencies & build
 dist/
+build/
+*.egg-info/
+
+# Project-specific
+context/
+key.key
+passwords.txt
+
+# Allow outputs directory but ignore its contents
+outputs/*
+!outputs/.gitkeep
+```
+
+Now I need to create the `.gitkeep` file in the outputs directory so git will track the folder:
