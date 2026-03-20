@@ -1,3 +1,8 @@
+"""
+Password Manager application entry point.
+Provides CLI menu for managing passwords with add, view, and delete modes.
+"""
+
 from ..shared import Graphics
 from .modes import PasswordMode
 
@@ -9,12 +14,18 @@ def app() -> None:
 
     while True:
         choice: str = input(
-            "Choose what mode do you want, 'add' or 'view'? (q to quit): "
+            "\nChoose what mode do you want:\n"
+            "  (a)dd    - Add new password\n"
+            "  (v)iew   - View all passwords\n"
+            "  (d)elete - Delete password\n"
+            "  (q)uit   - Quit\n"
+            "\nYour choice: "
         )
         PasswordMode(choice).mode()
 
 
 def main() -> None:
+    """Entry point for the password manager."""
     app()
 
 

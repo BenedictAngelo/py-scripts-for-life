@@ -15,11 +15,8 @@ build/
 # Project-specific
 context/
 key.key
-passwords.txt
+passwords.db
 
 # Allow outputs directory but ignore its contents
 outputs/*
 !outputs/.gitkeep
-```
-
-Now I need to create the `.gitkeep` file in the outputs directory so git will track the folder:
