@@ -1,5 +1,0 @@
-context/
-*__pycache__/
-*key.key
-*passwords.txt
-dist/
