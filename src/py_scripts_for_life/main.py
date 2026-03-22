@@ -3,18 +3,18 @@ Main entry point for Py Scripts for Life.
 Displays menu of available tools and routes user selection.
 """
 
-from .yt_dl_cv import app as yt_downloader_vid_converter
 from .password_manager import app as password_manager
 from .shared import Graphics
+from .video_converter import app as video_converter
 
 
 def menu() -> None:
     """Display main menu and handle tool selection."""
     try:
         choices = [
-            [1, "YouTube Downloader (MP4) & Video Converter (MP4 to MP3)"],
-            [2, "Password Manager"],
-            [3, "Future Project 3"],
+            [1, "YouTube donwloader"],
+            [2, "Video Converter"],
+            [3, "Password Manager"],
         ]
 
         Graphics.main_title()
@@ -33,11 +33,11 @@ def menu() -> None:
                     Graphics.closing()
                     exit()
                 case "1":
-                    yt_downloader_vid_converter()
+                    print("\nYoutube to MP4 downlaoder!\n")
                 case "2":
-                    password_manager()
+                    video_converter()
                 case "3":
-                    print("\nFuture Project 3 - Coming soon!\n")
+                    password_manager()
                 case _:
                     print("\nInvalid input. Please enter a valid option (1-3 or q).\n")
                     continue
