@@ -1,9 +1,11 @@
 """
 Shared utilities module for py-scripts-for-life.
 
-Exports common UI graphics and formatting functions used across all scripts.
+Exports common UI graphics, formatting functions, and authenticators
+used across all scripts.
 """
 
+from .authenticators import Authenticators
 from .graphics import Graphics
 
-__all__ = ["Graphics"]
+__all__ = ["Graphics", "Authenticators"]

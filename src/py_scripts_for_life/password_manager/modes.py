@@ -5,7 +5,7 @@ Uses SQLite database for persistent storage.
 
 from cryptography.fernet import Fernet
 
-from ..shared import Graphics
+from ..shared import Authenticators, Graphics
 from .database import PasswordDatabase
 from .password_generator import PasswordManager
 
@@ -27,54 +27,6 @@ class PasswordMode:
         """Initialize mode handler."""
         self.choice = choice
         self.db = PasswordDatabase()
-
-    @staticmethod
-    def _get_user_input(
-        prompt: str, validation_func=None, allow_quit: bool = True
-    ) -> str:
-        """
-        Reusable input validation function to reduce code redundancy.
-
-        Args:
-            prompt: Input prompt message
-            validation_func: Optional function to validate input
-            allow_quit: Allow user to quit with 'q' input
-
-        Returns:
-            Valid user input
-        """
-        while True:
-            user_input = input(prompt).lower() if "y/n" in prompt else input(prompt)
-
-            if allow_quit and user_input.lower() == "q":
-                Graphics.closing()
-                exit()
-
-            if validation_func and not validation_func(user_input):
-                continue
-
-            return user_input
-
-    @staticmethod
-    def _get_yes_no_input(prompt: str) -> bool:
-        """
-        Get yes/no input with validation.
-
-        Args:
-            prompt: Question to ask user
-
-        Returns:
-            True if 'y', False if 'n'
-        """
-        while True:
-            response: str = PasswordMode._get_user_input(prompt).lower()
-            if response in ("y", "yes", ""):
-                return True
-            elif response in ("n", "no"):
-                return False
-            else:
-                print("\nInvalid input. Please enter 'y' or 'n'.\n")
-                continue
 
     def view(self) -> None:
         """
@@ -117,10 +69,10 @@ class PasswordMode:
         Website and email have no defaults - user must provide them.
         """
         while True:
-            website: str = PasswordMode._get_user_input(
+            website: str = Authenticators.get_user_input(
                 "\nFor what website will you use it? (q to quit): "
             )
-            email: str = PasswordMode._get_user_input(
+            email: str = Authenticators.get_user_input(
                 "\nWhat email will you use it for? (q to quit): "
             )
 
@@ -143,10 +95,10 @@ class PasswordMode:
                     continue
                 max_character: int = int(max_character_str)
 
-            numbers: bool = PasswordMode._get_yes_no_input(
+            numbers: bool = Authenticators.get_yes_no_input(
                 "\nDo you want digits in your password? (y/n) (q to quit): "
             )
-            special_characters: bool = PasswordMode._get_yes_no_input(
+            special_characters: bool = Authenticators.get_yes_no_input(
                 "\nDo you want special characters in your password? (y/n) (q to quit): "
             )
 
@@ -184,7 +136,7 @@ class PasswordMode:
 
         print(f"\nTotal passwords in database: {password_count}\n")
 
-        delete_choice: str = PasswordMode._get_user_input(
+        delete_choice: str = Authenticators.get_user_input(
             "Delete by ID or delete all? (id/all) (q to quit): "
         ).lower()
 
@@ -206,7 +158,7 @@ class PasswordMode:
             print(f"  ID: {password_id} | Website: {website} | Email: {email}")
         Graphics.read_border()
 
-        password_id_str: str = PasswordMode._get_user_input(
+        password_id_str: str = Authenticators.get_user_input(
             "\nEnter the ID of the password to delete (q to quit): "
         )
 
@@ -222,7 +174,7 @@ class PasswordMode:
             return
 
         _, website, email, _, _ = password
-        confirm: bool = PasswordMode._get_yes_no_input(
+        confirm: bool = Authenticators.get_yes_no_input(
             f"\nAre you sure you want to delete ID {password_id} ({website})? (y/n): "
         )
 
@@ -236,7 +188,7 @@ class PasswordMode:
 
     def _delete_all(self) -> None:
         """Delete all password entries with double confirmation."""
-        confirm1: bool = PasswordMode._get_yes_no_input(
+        confirm1: bool = Authenticators.get_yes_no_input(
             "\n⚠️  Are you sure you want to delete ALL passwords? (y/n): "
         )
 
@@ -244,7 +196,7 @@ class PasswordMode:
             print("\n⚠️  Deletion cancelled.\n")
             return
 
-        confirm2: bool = PasswordMode._get_yes_no_input(
+        confirm2: bool = Authenticators.get_yes_no_input(
             "This action CANNOT be undone. Are you absolutely sure? (y/n): "
         )
 
