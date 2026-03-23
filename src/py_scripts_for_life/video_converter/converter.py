@@ -27,7 +27,7 @@ class Converter:
         try:
             subprocess.run(ffmpeg_cmd, check=True)
             print(
-                f"\nFile Successfully converted! See in your '{Paths.MUSIC_PATH}' directory"
+                f"\nFile(s) Successfully converted! See in your '{Paths.MUSIC_PATH}' directory"
             )
         except subprocess.CalledProcessError:
             print("\nConversion failed.")

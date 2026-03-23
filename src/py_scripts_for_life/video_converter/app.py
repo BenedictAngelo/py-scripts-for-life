@@ -1,5 +1,6 @@
 from ..shared import Graphics
-from .converter import Converter
+from .constants import Paths
+from .mode import ConversionPrompts
 
 
 def app() -> None:
@@ -7,25 +8,31 @@ def app() -> None:
     title: str = "Video converter"
     Graphics.script_title(title)
     while True:
-        input_file: str = input(
-            "Enter the name of the file you want to convert (path/to/[file.fileformat]) (q to quit):"
+        reply: str = input(
+            "Choose convert mode 'single' conversion or 'bulk' conversion (q to quit): "
         )
-        if input_file == "q":
-            Graphics.closing()
-            exit()
-        else:
-            pass
-
-        output_file: str = input(
-            "Enter the ouput file name (output automatically stored in 'Music' directory) (q to quit): "
-        )
-        if output_file == "q":
-            Graphics.closing()
-            exit()
-        else:
-            pass
-
-        Converter(input_file, output_file).converter()
+        match reply.lower():
+            case "single" | "":
+                print("\n**You chose 'single' conversion\n")
+                ConversionPrompts().single_convert()
+            case "bulk":
+                print("\n**You chose 'bulk' conversion\n")
+                print(
+                    f"\n**Bulk convert automatically converts every video format (.mp4, .mov, .mkv, .avi) in your '{Paths.VIDEOS_PATH}'\ninto '.mp3' format to your '{Paths.MUSIC_PATH}'**\n"
+                )
+                prompt: str = input(
+                    "Are you sure you want you want to proceed? (y/n) (q to quit)"
+                )
+                match prompt.lower():
+                    case "y" | "":
+                        ConversionPrompts().bulk_convert()
+                    case "n":
+                        continue
+                    case "q":
+                        Graphics.closing()
+                        exit()
+                    case _:
+                        print("\nInvalid input, try again\n")
 
 
 def main() -> None:
