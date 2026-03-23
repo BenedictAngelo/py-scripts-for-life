@@ -1,42 +1,90 @@
 import os
-from ..shared import Graphics
-from .constants import Paths, FileFormat
+from pathlib import Path
+
+from ..shared.authenticators import Authenticators
+from .constants import FileFormat, Paths
 from .converter import Converter
 
 
 class ConversionPrompts:
+    """Handles user interaction for video conversion modes."""
+
     @staticmethod
     def single_convert() -> None:
-
+        """Handle single file conversion mode with user input validation."""
         while True:
-            input_file: str = input(
-                "Enter the name of the file you want to convert (path/to/[file.fileformat]) (q to quit):"
+            # Get input file path with validation
+            input_file: str = Authenticators.get_user_input(
+                "Enter the path to the file you want to convert (q to quit): ",
+                allow_quit=True,
             )
-            if input_file == "q":
-                Graphics.closing()
-                exit()
-            else:
-                pass
 
-            output_file: str = input(
-                "Enter the ouput file name **ALWAYS PUT '.mp3' after file names** (q to quit): "
-            )
-            if output_file == "q":
-                Graphics.closing()
-                exit()
-            elif output_file == "":
+            # Validate that file exists
+            if not os.path.exists(input_file):
                 print(
-                    "Invalid input, output file name must at least have some characters and '.mp3'"
+                    f"\nError: File '{input_file}' not found. Please check the path.\n"
                 )
                 continue
-            else:
-                pass
 
+            # Get output file name with validation
+            output_file: str = Authenticators.get_user_input(
+                "Enter the output file name (include .mp3 extension) (q to quit): ",
+                validation_func=lambda x: x.endswith(".mp3") and len(x) > 4,
+                allow_quit=True,
+            )
+
+            # Perform conversion
             Converter(input_file, output_file).converter()
 
     @staticmethod
     def bulk_convert() -> None:
+        """Handle bulk conversion of all supported video files in the Videos directory."""
+        videos_path = Path(Paths.VIDEOS_PATH)
 
-        for i, filename in enumerate(os.listdir(Paths.VIDEOS_PATH)):
-            if filename.lower().endswith((FileFormat.MP4, FileFormat.AVI, FileFormat.MKV, FileFormat.MOV))
-                Converter(input_file = filename, output_file = f"audio_{i}" + FileFormat.MP3 ).converter()
+        # Check if videos directory exists
+        if not videos_path.exists():
+            print(f"\nError: Videos directory '{videos_path}' not found.\n")
+            return
+
+        # Find all supported video files
+        video_files = [
+            f
+            for f in videos_path.iterdir()
+            if f.is_file()
+            and f.suffix.lower()
+            in (FileFormat.MP4, FileFormat.AVI, FileFormat.MKV, FileFormat.MOV)
+        ]
+
+        if not video_files:
+            print(f"\nNo supported video files found in '{videos_path}'\n")
+            return
+
+        # Confirm with user before proceeding
+        print(f"\nFound {len(video_files)} video file(s) to convert:")
+        for video_file in video_files:
+            print(f"  - {video_file.name}")
+
+        confirm: bool = Authenticators.get_yes_no_input(
+            "\nAre you sure you want to convert all these files to MP3? (y/n) (q to quit): "
+        )
+
+        if not confirm:
+            print("\nBulk conversion cancelled.\n")
+            return
+
+        # Convert each video file
+        music_path = Path(Paths.MUSIC_PATH)
+        music_path.mkdir(parents=True, exist_ok=True)  # Ensure music directory exists
+
+        for i, video_file in enumerate(video_files):
+            # Create output filename based on input filename
+            output_filename = f"{video_file.stem}.mp3"
+            print(
+                f"\nConverting ({i + 1}/{len(video_files)}): {video_file.name} -> {output_filename}"
+            )
+
+            # Perform conversion
+            converter = Converter(str(video_file), output_filename)
+            converter.converter()
+
+        print(f"\nBulk conversion completed! Files saved to '{music_path}'\n")

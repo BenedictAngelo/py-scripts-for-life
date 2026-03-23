@@ -15,6 +15,17 @@ A secure command-line password manager with encryption support.
 
 **Status**: On going and production-ready
 
+### Video Converter ✅
+Convert video files to high-quality MP3 audio files.
+
+**Features:**
+- Single file conversion or bulk conversion mode
+- Supports MP4, MOV, MKV, and AVI video formats
+- Uses FFmpeg for reliable conversion
+- Cross-platform compatibility
+
+**Status**: Production-ready
+
 ### YouTube to MP3 🚧
 Download YouTube videos and convert them to MP3 audio files.
 
@@ -27,6 +38,7 @@ Download YouTube videos and convert them to MP3 audio files.
 ### Prerequisites
 - Python 3.10+
 - Poetry
+- FFmpeg (required for Video Converter)
 
 ### Installation
 
@@ -40,6 +52,12 @@ cd py-scripts-for-life
 ```bash
 poetry install
 ```
+
+3. Install FFmpeg (required for Video Converter):
+- Windows: Download from [ffmpeg.org](https://ffmpeg.org/download.html)
+- macOS: `brew install ffmpeg`
+- Ubuntu/Debian: `sudo apt install ffmpeg`
+- Fedora: `sudo dnf install ffmpeg`
 
 ### Running the Application
 
@@ -177,7 +195,7 @@ py-scripts-for-life/
 ├── poetry.lock                 # Dependency lock file
 │
 ├── src/
-│   └── py-scripts-for-life/    # Main package namespace
+│   └── py_scripts_for_life/    # Main package namespace
 │       ├── main.py             # Application entry point
 │       │
 │       ├── password_manager/   # Password Manager module
@@ -187,12 +205,21 @@ py-scripts-for-life/
 │       │   ├── password_generator.py  # Core implementation
 │       │   └── __init__.py
 │       │
+│       ├── video_converter/    # Video Converter module
+│       │   ├── README.md
+│       │   ├── app.py          # Main application logic
+│       │   ├── constants.py    # Path and format constants
+│       │   ├── converter.py    # FFmpeg conversion logic
+│       │   ├── mode.py         # Conversion mode handlers
+│       │   └── __init__.py
+│       │
 │       ├── yt-to-mp3/          # YouTube to MP3 module (placeholder)
 │       │   ├── README.md
 │       │   └── __init__.py
 │       │
 │       └── shared/             # Shared utilities
 │           ├── graphics.py     # UI formatting
+│           ├── authenticators.py # Input validation
 │           └── __init__.py
 │
 ├── tests/                      # Test directory
@@ -210,13 +237,15 @@ py-scripts-for-life/
 - **Poetry** - Dependency management and build tool
 - **Cryptography** - Fernet encryption library
 - **requests** - HTTP library
+- **FFmpeg** - Media processing library
 
 ---
 
 ## 📚 Documentation
 
-- **Password Manager**: [src/py-scripts-for-life/password_manager/README.md](./src/py-scripts-for-life/password_manager/README.md)
-- **YouTube to MP3**: [src/py-scripts-for-life/yt-to-mp3/README.md](./src/py-scripts-for-life/yt-to-mp3/README.md)
+- **Password Manager**: [src/py_scripts_for_life/password_manager/README.md](./src/py_scripts_for_life/password_manager/README.md)
+- **Video Converter**: [src/py_scripts_for_life/video_converter/README.md](./src/py_scripts_for_life/video_converter/README.md)
+- **YouTube to MP3**: [src/py_scripts_for_life/yt-to-mp3/README.md](./src/py_scripts_for_life/yt-to-mp3/README.md)
 
 ---
 
