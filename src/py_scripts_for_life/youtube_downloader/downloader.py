@@ -1,21 +1,20 @@
+import subprocess
 from dataclasses import dataclass
 from pathlib import Path
-
-import yt_dlp
 
 
 @dataclass
 class YouTubeDownloader:
-    """Handles YouTube video downloading with yt-dlp library."""
+    """Handles YouTube video downloading using yt-dlp subprocess."""
 
     url: str
     save_path: str
 
     def yt_downloader(self) -> None:
         """
-        Download YouTube video in highest resolution MP4 format.
+        Download YouTube video in highest resolution MP4 format using yt-dlp.
 
-        Validates the save path and handles common download errors.
+        Uses subprocess to execute yt-dlp command for better isolation and control.
         """
         try:
             # Ensure save path exists
@@ -23,29 +22,46 @@ class YouTubeDownloader:
 
             print(f"Downloading from URL: '{self.url}'")
 
-            # Configure yt-dlp options for MP4 format with best quality
-            ydl_opts: dict = {
-                "format": "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best",
-                "outtmpl": str(Path(self.save_path) / "%(title)s.%(ext)s"),
-                "merge_output_format": "mp4",
-                "quiet": False,
-                "no_warnings": False,
-            }
+            # Configure yt-dlp command for MP4 format with best quality
+            # Added additional flags to handle common YouTube issues
+            yt_dlp_cmd: list = [
+                "yt-dlp",
+                "--format",
+                "bv*+ba/b",
+                "--merge-output-format",
+                "mp4",
+                "--output",
+                str(Path(self.save_path) / "%(title)200s.%(ext)s"),
+                "--no-warnings",
+                "--prefer-ffmpeg",
+                self.url,
+            ]
 
-            # Create YoutubeDL instance and download
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                ydl.extract_info(self.url, download=True)
-                print(f"Video downloaded successfully! Saved to: '{self.save_path}'")
+            # Run yt-dlp as subprocess
+            result = subprocess.run(
+                yt_dlp_cmd,
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
 
-        except Exception as e:
-            print(f"An error occurred: '{e}'")
+            print(f"Video downloaded successfully! Saved to: '{self.save_path}'")
+
+        except subprocess.CalledProcessError as e:
+            error_msg = (
+                e.stderr.decode("utf-8") if e.stderr else "Unknown error occurred"
+            )
+            print(f"An error occurred: {error_msg.strip()}")
             # Print additional debugging info for common issues
-            if "400" in str(e) or "403" in str(e):
+            if "400" in error_msg or "403" in error_msg:
                 print("This might be due to network issues or geo-restrictions.")
                 print("Try checking your internet connection.")
             print("You can update yt-dlp with: pip install --upgrade yt-dlp")
-        finally:
-            pass
+        except FileNotFoundError:
+            print("Error: yt-dlp not found. Please install yt-dlp to use this feature.")
+            print("Install with: pip install yt-dlp")
+        except Exception as e:
+            print(f"An unexpected error occurred: '{e}'")
 
 
 def main() -> None:
