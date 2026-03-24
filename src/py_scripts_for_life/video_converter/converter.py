@@ -2,7 +2,7 @@ import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 
-from .constants import Paths
+from ..shared import Paths
 
 
 @dataclass

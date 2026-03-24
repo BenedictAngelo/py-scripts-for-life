@@ -1,8 +1,7 @@
 import os
 from pathlib import Path
 
-from ..shared.authenticators import Authenticators
-from .constants import FileFormat, Paths
+from ..shared import Authenticators, FileFormat, Paths
 from .converter import Converter
 
 

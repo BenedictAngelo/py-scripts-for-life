@@ -1,8 +1,6 @@
 """Main application entry point for the Video Converter."""
 
-from ..shared import Graphics
-from ..shared.authenticators import Authenticators
-from .constants import Paths
+from ..shared import Authenticators, Graphics, Paths
 from .mode import ConversionPrompts
 
 

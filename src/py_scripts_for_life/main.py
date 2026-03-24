@@ -6,13 +6,14 @@ Displays menu of available tools and routes user selection.
 from .password_manager import app as password_manager
 from .shared import Graphics
 from .video_converter import app as video_converter
+from .youtube_downloader import app as youtube_downloader
 
 
 def menu() -> None:
     """Display main menu and handle tool selection."""
     try:
         choices = [
-            [1, "YouTube donwloader"],
+            [1, "YouTube downloader"],
             [2, "Video Converter"],
             [3, "Password Manager"],
         ]
@@ -33,7 +34,7 @@ def menu() -> None:
                     Graphics.closing()
                     exit()
                 case "1":
-                    print("\nYoutube to MP4 downlaoder!\n")
+                    youtube_downloader()
                 case "2":
                     video_converter()
                 case "3":

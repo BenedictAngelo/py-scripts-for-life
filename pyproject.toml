@@ -32,6 +32,7 @@ packages = [
 python = "^3.10"
 cryptography = "^46.0.5"
 requests = "^2.32.5"
+pytube = "^15.0.0"
 
 [tool.poetry.scripts]
 py-scripts-for-life = "py_scripts_for_life.main:main"
